@@ -36,22 +36,27 @@ def load_data(data_dir):
     # Recorrer los archivos de audio en el directorio de datos
     for label in os.listdir(data_dir):
         label_dir = os.path.join(data_dir, label)
-        for file_name in os.listdir(label_dir):
-            file_path = os.path.join(label_dir, file_name)
-            # Extraer las características del archivo de audio
-            feature = extract_features(file_path)
-            features.append(feature)
-            labels.append(label)
+        if os.path.isdir(label_dir):  # Verificar si es un directorio
+            for root, dirs, files in os.walk(label_dir):
+                for file_name in files:
+                    file_path = os.path.join(root, file_name)
+                    # Concatenar los nombres de directorio en la etiqueta
+                    label_concat = "-".join([label] + os.path.relpath(root, label_dir).split(os.sep))
+                    # Extraer las características del archivo de audio
+                    feature = extract_features(file_path)
+                    features.append(feature)
+                    labels.append(label_concat)
+
 
     # Convertir las listas a matrices numpy
     X = np.array(features)
     y = np.array(labels)
-
+    print(y)
     return X, y
 
 
 # Cargar los datos de entrenamiento y prueba
-data_dir = "Audio"
+data_dir = "./AudiosComandosVoz"
 X, y = load_data(data_dir)
 
 # Dividir los datos en conjunto de entrenamiento y prueba
