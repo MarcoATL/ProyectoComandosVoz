@@ -9,10 +9,13 @@ from sklearn.metrics import classification_report, confusion_matrix
 # Definir la función de extracción de características
 def extract_features(file_path):
     # Cargar el archivo de audio
-    y, sr = librosa.load(file_path, duration=3.0)
+    y, sr = librosa.load(file_path, duration=2.5)
+
+    # Aplicar un filtro de reducción de ruido
+    y_filtered = librosa.decompose.nn_filter(y, aggregate=np.median, metric='cosine', width=int(librosa.time_to_samples(0.025)))
 
     # Calcular el espectrograma
-    spect = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=128, fmax=8000)
+    spect = librosa.feature.melspectrogram(y=y_filtered, sr=sr, n_mels=128, fmax=8000)
 
     # Convertir el espectrograma en decibeles
     spect_db = librosa.power_to_db(spect, ref=np.max)
@@ -25,7 +28,6 @@ def extract_features(file_path):
     features = spect_db_resize.flatten()
 
     return features
-
 
 
 # Definir la función de carga de datos
