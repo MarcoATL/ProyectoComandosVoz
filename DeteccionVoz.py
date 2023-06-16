@@ -2,10 +2,12 @@ import sounddevice as sd
 import numpy as np
 import pickle
 import librosa
-
+import joblib
 # Cargar el modelo
-with open('modelo_entrenado.pkl', 'rb') as archivo:
-    modelo = pickle.load(archivo)
+#with open('modelo_entrenado.pkl', 'rb') as archivo:
+    #modelo = pickle.load(archivo)
+
+modelo = joblib.load('modelo_entrenado.joblib')
 
 # Definir la función de extracción de características
 def extract_features(y, sr):

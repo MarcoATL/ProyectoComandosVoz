@@ -14,7 +14,7 @@ import pickle
 def extract_features(file_path):
     # Cargar el archivo de audio
     y, sr = librosa.load(file_path, duration=2.6)
-    
+
     # Extraer MFCC
     mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=20)
     mfcc_scaled = np.mean(mfcc.T,axis=0)
@@ -69,11 +69,11 @@ X, y = load_data(data_dir)
 
 # Dividir los datos en conjunto de entrenamiento y prueba
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.4, random_state=42
+    X, y, test_size=0.2, random_state=42
 )
 
 # Crear el pipeline con escalado de características y clasificador SVM
-pipeline = make_pipeline(StandardScaler(), SVC(kernel='rbf', C=1.0))
+pipeline = make_pipeline(StandardScaler(), SVC(kernel='linear', C=1.0))
 
 # Entrenar el modelo con los datos de entrenamiento
 pipeline.fit(X_train, y_train)
@@ -85,25 +85,11 @@ y_pred = pipeline.predict(X_test)
 print(confusion_matrix(y_test, y_pred))
 print(classification_report(y_test, y_pred))
 
-
-# Guardar el modelo entrenado
-with open('modelo_entrenado.pkl', 'wb') as f:
-    pickle.dump(pipeline, f)
-
-# Cargar el modelo
-with open('modelo_entrenado.pkl', 'rb') as f:
-    modelo_cargado = pickle.load(f)
-
-# Utilizar el modelo cargado para hacer predicciones
-y_pred_cargado = modelo_cargado.predict(X_test)
-
-'''
 # Guardar el modelo entrenado
 joblib.dump(pipeline, 'modelo_entrenado.joblib')
 
-# Cargar el modelo
-modelo_cargado = joblib.load('modelo_entrenado.joblib')
-
-# Utilizar el modelo cargado para hacer predicciones
-y_pred_cargado = modelo_cargado.predict(X_test)
+'''
+# Guardar el modelo entrenado
+with open('modelo_entrenado.pkl', 'wb') as f:
+    pickle.dump(pipeline, f)
 '''
